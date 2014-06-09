@@ -16,3 +16,4 @@ Some ideas are:
 
 If you have an idea or wish to comment on an existing one, please file an issue against this repo!
 
+The idea is that I can then sell the content to people who are willing and able to pay.  I can give it away to budding programmers who normally wouldn't have access to such tools.  We could even do some system where for every paid subscription a child is given free access.  I'm open to ideas in this area as well. 
