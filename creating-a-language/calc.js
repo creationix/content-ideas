@@ -67,7 +67,7 @@ function Capture(rule, nameAfter, nameBefore) {
     var next = rule(original);
     if (next === original) return original;
 
-    var text = rule.text.substring(original.pos, next.pos);
+    var text = original.text.substring(original.pos, next.pos);
     if (nameBefore) {
       var old = next.capture;
       next.capture = {};
@@ -92,6 +92,19 @@ function cloneState(state) {
 ////////////////////////////////
 
 
-function $expression($) {
+var integer = Literal(/^[0-9]+/);
+var operator = Literal(/^(\+|-|\/|\*)/);
+var whitespace = Optional(Literal(/^[\s\r\n]+/));
+var add = All(
+  Capture(integer, "first"),
+  whitespace,
+  Capture(operator, "operator"),
+  whitespace,
+  Capture(integer, "second")
+);
 
-}
+console.log(add({
+  text: "1 + 2",
+  pos: 0,
+  capture: {}
+}).capture);
