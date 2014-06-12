@@ -49,10 +49,11 @@ function Optional(rule) {
 function Literal(pattern) {
   return function(state) {
     var match = state.text.substring(state.pos).match(pattern);
+    if (!match) return state;
     if (match.index) {
-      console.warn("Non-anchored pattern. Start with ^");
+      console.warn("Non-anchored pattern. Start with ^", pattern);
+      return state;
     }
-    if (!match || match.index) return state;
 
     return {
       text: state.text,
@@ -73,7 +74,9 @@ function Capture(rule, nameAfter, nameBefore) {
       next.capture = {};
       next.capture[nameBefore] = old;
     }
-    next.capture[nameAfter] = text;
+    if (nameAfter) {
+      next.capture[nameAfter] = text;
+    }
 
     return next;
   };
@@ -91,20 +94,70 @@ function cloneState(state) {
 
 ////////////////////////////////
 
+// var code = 'vars code, fn, op\n\n-- Creating a function constructor manually\ncode = [ @fn, [ @params, \'a\', \'b\' ],[ @add, :a, :b ] ]\nprint("original code", code)\n-- Creating a function constructor using parse\ncode = parse("{a,b|a+b}")[0]\nprint("from string", code)\n-- Creating a function constructor using escape\ncode = escape {a,b|a+b}\nprint("from live function", code)\n-- Mess with code\ncode[2][0] = @mul\nprint(code)\n-- Turn code into live function\nfn = exec code\nprint(fn, fn(2, 3))\n\n-- Run some code dynamic directly\nop = if rand(2) { @add } else { @sub }\ncode = [op, 1, 2]\nprint("code", code)\nprint("result", exec code)\n';
+var code = '{a,b|a+b}'
+/*
+JACK AST
+[ @fn,
+  [ @params, 'a', 'b' ],
+  [ @add, :a, :b ]
+]
+JS AST
+["fn",
+  ["params", "a", "b"],
+  ["add",
+    ["symbol", "a"],
+    ["symbol", "b"]
+  ]
+]
+*/
 
-var integer = Literal(/^[0-9]+/);
-var operator = Literal(/^(\+|-|\/|\*)/);
-var whitespace = Optional(Literal(/^[\s\r\n]+/));
-var add = All(
-  Capture(integer, "first"),
-  whitespace,
-  Capture(operator, "operator"),
-  whitespace,
-  Capture(integer, "second")
+var IDENT = Literal(/^[a-z_](?:[-]?[a-z0-9_])*[?!]?/i);
+var INTEGER = Literal(/^(?:0|[+-]?[1-9][0-9]*)/);
+var FORM = Literal(/^@[a-z]+/);
+var SYMBOL = All(Literal(/^:/), IDENT);
+
+var PARAMS = Plus(IDENT);
+
+var FN = All(
+  Literal(/^\{/),
+  PARAMS,
+  Literal(/^|/),
+  Plus(EXPRESSION),
+  Literal(/^}/)
 );
 
-console.log(add({
-  text: "1 + 2",
-  pos: 0,
-  capture: {}
-}).capture);
+var VALUE = Any(
+  INTEGER,
+  IDENT,
+  FORM,
+  SYMBOL,
+  FN
+);
+
+var BINOP = Any(
+  Literal(/^\+/),
+  Literal(/^\-/),
+  Literal(/^\*/),
+  Literal(/^\//)
+);
+
+function EXPRESSION(state) {
+  return Any(
+    All(VALUE, BINOP, EXPRESSION),
+    VALUE
+  )(state);
+}
+
+function parse(ROOT, text) {
+  var state = {
+    text: text,
+    pos: 0,
+    capture: {}
+  };
+  var next = ROOT(state);
+  if (next === state) throw new Error("Failed to parse");
+  return next.capture;
+}
+
+console.log(parse(EXPRESSION, "1+2+3-4"));

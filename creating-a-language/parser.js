@@ -249,4 +249,6 @@ function parse(tokens) {
   }
 }
 
+var code = 'vars code, fn, op\n\n-- Creating a function constructor manually\ncode = [ @fn, [ @params, \'a\', \'b\' ],[ @add, :a, :b ] ]\nprint("original code", code)\n-- Creating a function constructor using parse\ncode = parse("{a,b|a+b}")[0]\nprint("from string", code)\n-- Creating a function constructor using escape\ncode = escape {a,b|a+b}\nprint("from live function", code)\n-- Mess with code\ncode[2][0] = @mul\nprint(code)\n-- Turn code into live function\nfn = exec code\nprint(fn, fn(2, 3))\n\n-- Run some code dynamic directly\nop = if rand(2) { @add } else { @sub }\ncode = [op, 1, 2]\nprint("code", code)\nprint("result", exec code)\n';
+
 console.log(parse(tokenize("a = 1 + 2")))
