@@ -25,7 +25,6 @@ module.exports = function (rules) {
         string = string.substring(1);
       }
     }
-    tokens.push("EOF");
     return tokens;
   };
 };

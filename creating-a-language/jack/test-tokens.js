@@ -20,8 +20,7 @@ var tests = [
     "+",
     ["IDENT","b"],
     "}",
-    "TERM",
-    "EOF"
+    "TERM"
   ]],
   [[
     "a @a :a ::a"
@@ -30,15 +29,46 @@ var tests = [
     ["FORM","a"],
     ["SYMBOL",{"depth":1,"ident":"a"}],
     ["SYMBOL",{"depth":2,"ident":"a"}],
-    "TERM",
-    "EOF"
+    "TERM"
   ]],
   [[
     "<4a 61 63 6b>"
   ], [
-    ["BINARY","Jack"],
-    "TERM",
-    "EOF"
+    ["DATA","Jack"],
+    "TERM"
+  ]],
+  [[
+    '"Hello"',
+    "'Hello'"
+  ], [
+    ["TEXT", "Hello"],
+    "TERM"
+  ]],
+  [[
+    "cool-name, question?, statement!"
+  ], [
+    ["IDENT","cool-name"],
+    ",",
+    ["IDENT","question?"],
+    ",",
+    ["IDENT","statement!"],
+    "TERM"
+  ]],
+  [[
+    "-1 1 0 -0 0xdeadbeef -0xdeadbeef 0o123 0b1010"
+  ], [
+    "-",
+    ["INTEGER",1],
+    ["INTEGER",1],
+    ["INTEGER",0],
+    "-",
+    ["INTEGER",0],
+    ["HEX",3735928559],
+    "-",
+    ["HEX",3735928559],
+    ["OCTAL",83],
+    ["BINARY",10],
+    "TERM"
   ]]
 ];
 
