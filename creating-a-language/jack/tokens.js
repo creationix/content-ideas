@@ -6,6 +6,7 @@ module.exports = [
   TEXT,    /^(?:"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/,
   FORM,    /^@([a-z]+)/,
   IDENT,   /^[a-z](?:[_\-]?[a-z0-9])*[?!]?/i,
+  SYMBOL,   /^(:+)([a-z](?:[_\-]?[a-z0-9])*[?!]?)/i,
   HEX,     /^(-?)0[x]([0-9a-f]+)/i,
   INTEGER, /^(?:0|[+-]?[1-9][0-9]*)/,
 
@@ -49,6 +50,13 @@ function FORM(match) {
 
 function IDENT(match) {
   return ["IDENT", match[0]];
+}
+
+function SYMBOL(match) {
+  return ["SYMBOL", {
+    depth: match[1].length,
+    ident: match[2]
+  }];
 }
 
 function HEX(match) {
