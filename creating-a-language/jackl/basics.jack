@@ -1,0 +1,151 @@
+-- This is an anonymous function that accepts two parameters and adds them.
+-- A new variable "add" is created and initialized with the fn as it's value
+(@let add (@fn a b (
+  (@add a b)
+)))
+
+-- If the function body has only one statement, it doesn't need nesting
+(@let add (@fn a b
+  (@add a b)
+))
+
+-- The @def helper is shorthand for this.
+(@def add a b
+  (@add a b)
+)
+
+-- You can call anything by having it appear first
+-- This calls add with the inputs 1 and 2
+(add 1 2)
+
+-- Functions can have named arguments in addition to positional arguments
+-- This function will append an "!" if loudly is truthy
+(@def speak message ?loudly
+  (@print message (@if loudly "!"))
+)
+
+-- Call with the injected argument
+(speak loudly=true "Hello")
+-- Call without
+(speak "Hi")
+
+-- External modules can be imported using @import
+(@let dom-builder (@import "dom-builder"))
+-- With explicit @get
+(@let parser (@get (@import "http-codec") "parser")))
+-- With dot access shorthand
+(@let parser (@import "http-codec").parser)
+
+(@let http-codec (@import "http-codec"))
+(@let parser http-codec.parser)
+
+-- Exports can be set using @export
+(@export dom-builder)
+
+(@export (@map
+  parser parser
+))
+(@export { parser })
+(@export { parser: parser })
+
+-- Objects created with @map
+(@map
+  "key" "value"
+  123 456
+)
+-- shorthand (all keys are strings and must be valid identifiers)
+{
+  key: "value"
+  another: 456
+}
+
+-- Arrays created with @list
+(@list value1 "value2" 3)
+-- shorthand
+[value1 "value2" 3]
+
+
+-- Get keys of object
+(@keys obj)
+
+-- Get length of list or string
+(@len string)
+
+-- Dot access to maps (key is string and valid identifier)
+obj.property
+-- Dot access to lists (key is positive integer)
+list.0
+
+-- @get access
+(@get obj "property")
+
+
+-- Values can be set using @set
+(@set obj "property" value)
+-- Or two-argument version of @set with dot access
+(@set obj.property value)
+(@set list.0 value)
+
+-- Check for key using @has
+(@has obj "property")
+-- Remove key using @del
+(@del obj "property")
+
+-- While loop, last arg is single expression or block
+(@while condition
+  (@print "Hello")
+)
+
+-- for loop.  Can loop over nearly anything
+-- last argument is body, second-to-last is item to be iterated over
+-- If there is one left, it's values, if there are two, it's keys and values
+-- Anything with internal @len can be looped over
+(@for item list (@print item))
+-- Anything callable can be an iterator.
+(@for i (@range 10) (@print (@add i 1)))
+-- Anything that has internal @keys can be looped over
+(@for key value obj (@print key value))
+
+-- Block.  Any time you want a compound action, make sure the first item is a list
+(
+  -- Blocks can contain comments
+  (@let tmp 42)
+  -- Their own local variables
+  (@mul tmp 7)
+  -- The last expression is the value
+)
+
+-- @for(key, value, body)
+-- @for(value, body)
+
+-- Creating an HTML DSL shouldn't be hard with this syntax:
+(html
+  (head
+    (meta charset="utf-8")
+    (title "Tedit App")
+    (meta name="apple-mobile-web-app-capable" content="yes")
+    (meta name="apple-mobile-web-app-status-bar-style" content="black-translucent")
+    (meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no")
+    (link rel="icon" href="icons/icon-128.png" sizes="128x128" type="image/png")
+    (link rel="icon" href="icons/icon-196.png" sizes="196x196" type="image/png")
+    (link rel="stylesheet" href="tedit-embedded.css" charset="utf-8")
+    (link rel="stylesheet" href="style.css" charset="utf-8")
+  )
+  (body
+    (script src="forge/forge.min.js" charset="utf-8")
+    (script src="ace/ace.js" charset="utf-8")
+    (script src="ace/ext-modelist.js" charset="utf-8")
+    (script src="ace/ext-themelist.js" charset="utf-8")
+    (script src="ace/ext-whitespace.js" charset="utf-8")
+    (script src="ace/ext-language_tools.js" charset="utf-8")
+    (script src="bootstrap.js" charset="utf-8")
+  )
+)
+
+-- Writing a node.js http server shouldn't be too hard either
+(@import http 'http')
+((http.createServer (@fn req res (
+  (res.writeHead 200 Content-Type='text/plain')
+  (res.end 'Hello World\n')
+))).listen 1337 '127.0.0.1')
+(@print 'Server running at http://127.0.0.1:1337/')

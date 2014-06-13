@@ -1,0 +1,241 @@
+(@let add
+  (@fn a b (
+    (@add a b)
+  ))
+)
+
+(add 1 2)
+
+vars names, person, i, doubles, lengths, cubeRange
+names = ["Thorin", "Dwalin", "Balin", "Bifur", "Bofur", "Bombur", "Oin",
+         "Gloin", "Ori", "Nori", "Dori", "Fili", "Kili", "Bilbo", "Gandalf"]
+
+for name in names {
+  if name != "Bilbo" && name != "Gandalf" {
+    print(name)
+  }
+}
+
+person = {name: "Tim", age: 30}
+for key, value in person {
+  print(key + " = " + value)
+}
+
+i = 0
+while i < 10 {
+  i = i + 1
+  print(i)
+}
+
+/////////////////////////////////////////
+
+(@let names ( @list "Thorin" "Dwalin" "Balin" "Bifur" "Bofur" "Bombur" "Oin" "Gloin"
+  "Ori" "Nori" "Dori" "Fili" "Kili" "Bilbo" "Gandalf" ))
+
+(@for name names (
+  (@if (@and (@neq name "Bilbo") (@neq name "Gandalf")) (
+    (@print name)
+  ))
+))
+
+(@var person (@map "name" "Tim" "age" 30))
+(@for key value person (
+  (@print key " = " value))
+))
+
+(@var i 0)
+(@while (@lt i 10) (
+  (i (@add i 1))
+  (@print i)
+))
+
+//////////////////////////////////////
+
+print("range")
+for i in range(10) {
+  print(i + 1)
+}
+for i in range(10) {
+  print(10 - i)
+}
+
+-- Dynamic object that gives the first 10 doubles
+doubles = {
+  @len: {| 10 }
+  @get: {key|
+    if key is Integer { key * key }
+  }
+}
+print("#doubles", #doubles)
+
+print("Doubles")
+for k, v in doubles {
+  print([k, v])
+}
+
+//////////////////////////////////////
+
+(@print "range")
+(@for i (@range 10) (
+  (@print (@add i 1))
+))
+(@for i (@range 10) (
+  (@print (@sub 10 i))
+))
+
+-- Dynamic object that gives the first 10 doubles
+(@let doubles (@map
+  @len 10
+  @get (@fn key (
+    (@mul key key)
+  ))
+)
+(@print "doubles length" (@len doubles))
+
+(@print "Doubles")
+(@for k v doubles (
+  (@print (@list k v))
+))
+
+////////////////////////
+
+-- Dynamic object that has names list as keys and string lenth as values
+lengths = {
+  @keys: {| names }
+  @get: {key|
+    if key is String { #key }
+  }
+}
+
+print ("Lengths")
+for k, v in lengths {
+  print([k, v])
+}
+
+/////////////////////////////////////
+
+-- Dynamic object that has names list as keys and string lenth as values
+(@let lengths (@map
+  @keys names
+  @get (@fn key (
+    (@len key )
+  ))
+))
+
+(@print "Lengths")
+(@for k v lengths (
+  (@print (@list k v))
+))
+
+/////////////////////////////////////
+
+cubeRange = {n|
+  vars i, v
+  i = 0
+  {
+    @call: {|
+      v = i
+      i = i + 1
+      if v < n { v * v * v }
+    }
+  }
+}
+
+print("Cubes")
+for k, v in cubeRange(5) {
+  print([k, v])
+}
+
+/////////////////////////////////////
+
+(@let cubeRange (@fn n (
+  (@let i 0)
+  (@map
+    @call (@fn (
+      (@let v i)
+      (@incr i)
+      (@if (@lt v n) (
+        (@mul v v v)
+      ))
+    ))
+  )
+)))
+
+(@print "Cubes")
+(@for k v cubeRange (
+  (@print (@list k v))
+))
+
+/////////////////////////////////////
+
+print("String")
+for k, v in "Hello World" {
+  print([k, v])
+}
+
+/////////////////////////////////////
+
+(@print "String")
+(@for k v "Hello World" (
+  (@print (@list k v))
+))
+
+"string"
+123
+true
+false
+null
+
+@map   -- map({k,v}*)
+@list  -- list(a*)
+
+@print -- print(value*)
+@range -- range(i) iterator from 0 to i - 1
+@incr  -- increment(variable, amount=1)
+@decr  -- decrement(variable, amount=1)
+
+@sub   -- subtract(a,b)
+@add   -- add(a,b)
+@mul   -- multiply(a,b)
+@div   -- divide(a,b)
+@mod   -- modulus(a,b)
+@pow   -- power(a,b)
+
+@lt    -- less than(a,b)
+@lte   -- less than or equal(a,b)
+@gt    -- greater than(a,b)
+@gre   -- greater than or equal(a,b)
+@eq    -- equal(a,b)
+@neq   -- not equal(a,b)
+
+@not   -- logical not(a)
+@and   -- logical and(a,b)
+@or    -- logical or(a,b)
+@xor   -- logical exclusive or(a,b)
+
+@bnot  -- bitwise not(a)
+@band  -- bitwise and(a,b)
+@bor   -- bitwise or(a,b)
+@bxor  -- bitwise xor(a,b)
+
+@let   -- define local variable(name, value?)
+@assign-- assign new value to local variable(name, value)
+@fn    -- function definition(args*,(body*))
+
+@for   -- for loop(key,value,item,(body*))
+@while -- while loop(condition, (body*))
+
+@len   -- get length(value)
+@keys  -- get keys(value)
+
+@has   -- has key(obj, key)
+@get   -- get key(obj, key)
+@set   -- set key(obj, key, value)
+@del   -- delete key(obj, key)
+
+@escape -- escape(body*)
+@exec   -- exec(expression)
+
+@split  -- split((body*)+)
+
+@if     -- if({expression,(body*)}+)

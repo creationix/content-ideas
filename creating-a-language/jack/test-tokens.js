@@ -1,19 +1,18 @@
 "use strict";
 
-var tokenize = require('./tokenize')(require('./tokens'));
+var tokenize = require('./tokenizer')(require('./tokens'));
 
 var tests = [
   [[
-    "var add = {a, b|\n  a + b\n}\n",
-    "var add={a,b|a+b}",
-    "var add = {\n  a,\n  b\n|\n  a +\n  b\n}\n"
+    "var add = {a b|\n  a + b\n}\n",
+    "var add={a b|a+b}",
+    "var add = {\n  a b\n|\n  a +\n  b\n}\n"
   ], [
-    ["IDENT","var"],
+    "VAR",
     ["IDENT","add"],
     "=",
     "{",
     ["IDENT","a"],
-    ",",
     ["IDENT","b"],
     "|",
     ["IDENT","a"],
