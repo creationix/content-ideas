@@ -9,10 +9,13 @@
   (@add a b)
 ))
 
--- The @def helper is shorthand for this.
+-- The @def helper is shorthand @let and @fn
 (@def add a b
   (@add a b)
 )
+
+-- Technically we could have just aliased @add directly
+(@let add @add)
 
 -- You can call anything by having it appear first
 -- This calls add with the inputs 1 and 2
