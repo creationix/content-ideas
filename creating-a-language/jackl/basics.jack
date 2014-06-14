@@ -152,3 +152,14 @@ list.0
   (res.end 'Hello World\n')
 ))).listen 1337 '127.0.0.1')
 (@print 'Server running at http://127.0.0.1:1337/')
+
+-- Builtins
+@fn    -- Function definition
+@let   -- Variable declaration
+@def   -- shorthand for @let and @fn
+@print -- print arguments to console
+@join  -- like @print but returns string instead of outputting it
+@if    -- like the ?: operator in C families
+@for   -- Loop without collecting results
+@map   -- Loop and collect results
+@filter -- Filter list
