@@ -2,10 +2,8 @@ var pathjoin = require('pathjoin');
 var fs = require('data/fs');
 
 // Wrapper around tedit's private APIs to provide access to the vfs.
-module.exports = {
-  readFile: readFile,
-  relative: relative
-};
+exports = module.exports = relative;
+exports.readFile = readFile;
 
 function relative(dirname) {
   return {

@@ -1,11 +1,11 @@
 "use strict";
 
 var tokenize = require('../tokenizer')(require('./tokens'));
-var fs = require('../fs').relative(__dirname);
+var fs = require('../fs')(__dirname);
 var carallel = require('carallel');
 carallel([
   fs.readFile("./syntax.jkl"),
-  fs.readFile("./syntax.tokens.json"),
+  fs.readFile("./syntax.tokens"),
 ], function (err, tests) {
   if (err) throw err;
   for (var i = 0; i < tests.length; i += 2) {
