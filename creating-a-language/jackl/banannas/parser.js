@@ -1,28 +1,4 @@
 
-function Form(name, comments) {
-  this.name = name;
-  this.comments = comments;
-}
-Form.prototype.toJack = function () {
-  return "@" + this.name;
-};
-
-function Symbol(name, comments) {
-  this.name = name;
-  this.comments = comments;
-}
-Symbol.prototype.toJack = function () {
-  return ":" + this.name;
-};
-
-function Integer(value, comments) {
-  this.value = value;
-  this.comments = comments;
-}
-Integer.prototype.toJack = function () {
-  return this.value;
-};
-
 function parse(tokens) {
   var current = [];
   var comments = [];

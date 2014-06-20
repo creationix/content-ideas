@@ -1,0 +1,327 @@
+(@fn add(a b) (+ a b))
+(@defn add [a b] (+ a b))
+(@def add (@fn [a b] (+ a b))
+
+
+(def add (lambda (a b) {a + b})
+(def (add a b) {a + b})
+
+-- Comments start with two dashes `--`
+@let name value -- new local variable
+@fn [args*] body* -- function prototype.  First arg is vector or arguments
+@def name [args*] body* -- combined @let and @fn
+
++ - * / % < > = <= >= <> & | ^ -- Math operators
+and or not xor -- logical operators with short circuiting on 'and' and 'or'
+0 1 2 3 -4 -- integers
+"string stuff" -- strings
+true false null -- constants
+{} -- dictionary literal
+[] -- list literal
+@map iteratable function
+
+filtermap :(1 2 3)
+  map=fn (x) {x + 1}
+  filter
+
+(map :(1 2 3) (lambda (x) {x + 1}))
+
+if(not{a or b})
+(if (not (or a b)))
+list[4]
+
+each(0..10).filter({i|i%2}).map({i|i+1})
+
+
+(map i (+ i 1)
+  (filter i (% i 2)
+    (range 10)
+  )
+) --> :(2 4 6 8 10)
+
+map i {i + 1}
+  filter i {i % 2}
+    range 10
+-->
+:(2 4 6 8 10)
+
+fmap (lambda (i) {i + 1})
+  ffilter (lambda (i) { i % 2})
+    range(10)
+
+omap k v [k v]
+  [name="Tim" age=32]
+-->
+[(:name "Tim") (:age 32)]
+
+(@let H (@import "html-template"))
+
+("doctype" "html")
+("html" lang="en"
+ ("head"
+  ("title" "Test Page")
+ )
+ ("body"
+  ("h1" "Test Page")
+  ("ul"
+   (for person in people
+    ("li" person)
+   )
+  )
+ )
+)
+
+-- Identifier is any string not containing:
+-- ( ) [ ] { } " , ' : ` ; # | \ . or whitespace
+
+-- Prefixing with : is like quote in lisp
+:symbol :(1 2 4)
+-- these are alias for
+(quote symbol) (quote 1 2 4)
+
+-- Strings start with " contain anything except " or \ and end with "
+-- You can escape using \" or \\.  Some invisible characters can be
+-- written as \0 \t \r \n or they can be included raw.
+
+(define add (a b) {a + b})
+{1 + 5} -- infix notation
+(+ 1 5)   -- prefix notation
+
+-- Significant indentation can make most parens dissapear.
+html lang="en"
+  head
+    title "Welcome to my Page"
+    link rel="stylesheet" href="style.css"
+  body
+    h1 "Welcome to my Page"
+    form action="https://creationix.com/api/subscribe" method="POST" id="payment-form"
+      article class="grid_6"
+        fieldset
+          label for="name-field" "Your Name"
+          input required="" data-stripe="name" name="name" id="name-field" type="text"
+        fieldset
+          label for="email-field" "Email"
+          input required="" data-stripe="email" name="email" id="email-field" type="email"
+        fieldset
+          label for="comments-field" "Comments"
+          textarea name="comments" id="comments-field"
+        fieldset
+          label for="radio" "Chosen Plan"
+          div class="radio"
+            span
+              input name="plan" value="basic" id="plan-basic-radio" required="" type="radio"
+              label for="plan-basic-radio" (span) "Basic Subscription"
+            span
+              input name="plan" value="advanced" id="plan-advanced-radio" type="radio"
+              label for="plan-advanced-radio" (span) "Advanced Subscription"
+            span
+              input name="plan" value="ultimate" id="plan-ultimate-radio" type="radio"
+              label for="plan-ultimate-radio" (span) "Ultimate Subscription"
+      article class="grid_6"
+        span class="payment-errors"
+        fieldset
+          label for="number-field" "Card Number"
+          input size="20" data-stripe="number" id="number-field" required="" type="text"
+        fieldset
+          label for="cvc-field" "CVC"
+          input size="4" data-stripe="cvc" id="cvc-field" required="" type="text"
+        fieldset
+          label for="month-field" "Expiration Month"
+          span class="select"
+            select id="month-field" data-stripe="exp_month"
+              option "Choose a Month"
+              option value="01" "1 - January"
+              option value="02" "2 - February"
+              option value="03" "3 - March"
+              option value="04" "4 - April"
+              option value="05" "5 - May"
+              option value="06" "6 - June"
+              option value="07" "7 - July"
+              option value="08" "8 - August"
+              option value="09" "9 - September"
+              option value="10" "10 - October"
+              option value="11" "11 - November"
+              option value="12" "12 - December"
+        fieldset
+          label for="year-field" "Year"
+          input size="4" placeholder="YYYY" data-stripe="exp_year" id="year-field" required="" type="year"
+        fieldset
+          input id="submitbtn" value="Subscribe" class="first" type="submit"
+          input id="resetbtn" value="Reset" type="reset"
+
+[define add [a b] (a + b)]
+[lambda [a b] (a + b)]
+
+
+if expr
+ value-1
+elif expr2
+ value-2
+else
+ value-3
+
+match expr-1 value-1
+      expr-2 value-2
+      expr-3 value-3
+
+
+
+-- Sample output for 3x3 maze
+-- ██████████████
+-- ██      ██  ██
+-- ██  ██████  ██
+-- ██          ██
+-- ██  ██  ██████
+-- ██  ██      ██
+-- ██████████████
+
+(@map 10 (@fn [i] i))
+(@map k i 10 i)
+(@map i 10 i)
+(@map 10)
+
+
+
+-- Given a cell, find it's root.
+(@let find-root (cell |
+  (@while (@has cell :parent)
+    (@set cell (@get cell :parent))
+  )
+  cell
+))
+
+-- Generate a random sequence of all integers
+-- from 0 to n - 1.
+(@def random-sequence [n]
+  -- First build an ordered list
+  (@let list (@map i n i))
+
+  -- Then swap each item with another random item.
+  -- This shuffles the order.
+  (@each i n (
+  ))
+  for (i = 0; i < n; i++) {
+    var j = Math.floor(Math.random() * n);
+    var temp = list[i];
+    list[i] = list[j];
+    list[j] = temp;
+  }
+
+  list
+)
+
+-- Given a width and height, generate a maze.
+(@def generate-maze [width height]
+  -- Calculate the size of a list of all cells
+  (@let length (@mul width height))
+
+  -- Build a list of cells in the grid.
+  -- Initially all walls are closed
+  (@let cells (@map length (@dict
+    parent null
+  )))
+  (@let walls (@map length (@dict
+    right true
+    bottom true
+  )))
+
+  -- Walk the list in shuffled order and open walls.
+  (@each i (random-sequence length)
+    (@let wall (@get walls i))
+    (@let root (find-root (@get cells i)))
+    -- Ignore the last column.
+    (@if (@lt (@mod i width) (@sub width 1))
+      -- Open right wall and merge if not in same set.
+      (@let right-root (find-root (@get cells (@add i 1))))
+      (@if (@neq root right-root)
+        (@set right-root :parent root)
+        (@set wall :right false)
+      )
+    )
+    -- Ignore the last row
+    (@if (@lt (@div i width) (@sub height 1))
+      -- Open bottom wall and merge if not in same set.
+      (@let bottom-root (find-root (@get cells (@add i width))))
+      (if (@neq root bottom-root)
+        (@set bottom-root :parent root)
+        (@set wall :bottom false)
+      )
+    )
+  )
+
+  (@set walls :width width)
+  (@set walls :height height)
+
+  walls
+)
+
+
+function renderMaze(maze) {
+  var width = maze.width;
+  var height = maze.height;
+  var newWidth = width * 2 + 1;
+  var newHeight = height * 2 + 1;
+  var grid = new Array(newWidth * newHeight);
+  var i, x, y, cell;
+  var j = 0;
+
+  // Top wall is solid
+  for (x = 0; x < newWidth; x++) {
+    grid[j++] = 1;
+  }
+
+  // Loop the maze row by row
+  for (y = 0; y < height; y++) {
+    // First render a row for the cell and right wall
+    grid[j++] = 1; // Left wall is solid
+    for (x = 0; x < width; x++) {
+      cell = maze[x + y * width];
+      // Cell itself is always empty
+      grid[j++] = 0;
+      // Right wall is conditional
+      grid[j++] = cell.right ? 1 : 0;
+      i++;
+    }
+
+    // Then render bottom wall and corner
+    grid[j++] = 1; // Left wall is solid
+    for (x = 0; x < width; x++) {
+      cell = maze[x + y * width];
+      // Bottom wall is conditional
+      grid[j++] = cell.bottom ? 1 : 0;
+      // Corner is always solid.
+      grid[j++] = 1;
+      i++;
+    }
+  }
+  grid.width = newWidth;
+  grid.height = newHeight;
+  return grid;
+}
+
+// Draw a grid as using full-blocks, spaces and newlines.
+function drawGrid(grid) {
+  var width = grid.width;
+  var height = grid.height;
+  var text = "\n";
+  var i = 0;
+  for (var y = 0; y < height; y++) {
+    for (var x = 0; x < width; x++) {
+      text += grid[i++] ? "██" : "  ";
+    }
+    text += "\n";
+  }
+  return text;
+}
+
+
+console.log(randomSequence(8));
+// Sample output for 10 item sequence
+// [ 4, 1, 7, 8, 9, 6, 2, 3, 0, 5 ]
+
+var maze = generateMaze(10, 10);
+console.log(maze);
+var grid = renderMaze(maze);
+console.log(grid);
+var text = drawGrid(grid);
+console.log(text);

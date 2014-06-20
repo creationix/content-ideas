@@ -1,0 +1,21 @@
+-- Create a function and assign to a local variable.
+(def add (λ (a b)
+  (print "Adding!")
+  (+ a b)
+))
+
+-- Call the new function and print the result.
+(print (add 1 2))
+
+-- Create a macro "defn" that combines "def" and "λ"
+(macro defn (name rest...)
+  [:def name [:λ rest...]]
+)
+
+-- Use our new macro for shorthand
+(defn add (a b)
+  (+ a b)
+)
+
+-- Also test some constants
+[true false null]

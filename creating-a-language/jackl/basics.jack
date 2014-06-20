@@ -1,3 +1,54 @@
+-- Define a twice using first-class function
+(@defn twice [fn] (
+  (fn)
+  (fn)
+))
+
+-- Call it
+(twice (@fn
+  (@print "Hello")
+))
+
+(@def :twice :block (@do
+  block
+  block
+))
+
+-- Call it
+(twice (@print "Hello"))
+
+-- defining a custom def
+(@def mydef :name :args* :body (
+  (@print "Defining " !name)
+  (@let :name (@fn :args* :body))
+))
+
+(mydef add a b (@add a b))
+
+
+
+(@def add a b
+  (@add a b)
+)
+
+(@def def :name :args* :body
+  (@def :name :args* :body)
+)
+
+(def add a b
+  (@add a b)
+)
+
+1. execute @def with args:
+  - :add -- create a new local variable add that's a function
+  - :a   -- which takes two parameters :a and :b
+  - :b
+  - [@add :a :b] -- Who's body is this expression
+
+
+
+
+
 -- This is an anonymous function that accepts two parameters and adds them.
 -- A new variable "add" is created and initialized with the fn as it's value
 (@let add (@fn a b (
@@ -142,6 +193,20 @@ list.0
     (script src="ace/ext-whitespace.js" charset="utf-8")
     (script src="ace/ext-language_tools.js" charset="utf-8")
     (script src="bootstrap.js" charset="utf-8")
+  )
+)
+
+(div class="entry"
+  (h1 title)
+  (div class="body"
+    body
+  )
+)
+
+
+(ul class="people_list"
+  (@map person people
+    (li person)
   )
 )
 

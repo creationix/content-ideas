@@ -18,7 +18,7 @@ module.exports = function (rules) {
       }
       if (match) {
         string = string.substring(match[0].length);
-        if (token) tokens.push(token);
+        if (token !== undefined) tokens.push(token);
       }
       else {
         tokens.push(string[0]);

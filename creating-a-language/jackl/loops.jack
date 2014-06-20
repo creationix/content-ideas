@@ -1,0 +1,22 @@
+(def names [
+  "Thorin" "Dwalin" "Balin" "Bifur" "Bofur" "Bombur" "Oin" "Gloin" "Ori" "Nori"
+  "Dori" "Fili" "Kili" "Bilbo" "Gandalf"
+])
+
+(for name names
+  (if {{name != "Bilbo"} and {name != "Gandalf"}}
+    (print name)
+  )
+)
+
+(for name names
+  (if (and (!= name "Bilbo") (!= name "Gandalf"))
+    (print name)
+  )
+)
+
+{for name names
+  {if ((name != "Bilbo") and (name != "Gandalf"))
+    {print name}
+  }
+}
