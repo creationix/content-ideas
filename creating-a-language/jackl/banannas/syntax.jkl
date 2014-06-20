@@ -8,8 +8,8 @@
 (print (add 1 2))
 
 -- Create a macro "defn" that combines "def" and "λ"
-(macro defn (name rest...)
-  [:def name [:λ rest...]]
+(macro defn (name rest…)
+  [:def name [:λ rest…]]
 )
 
 -- Use our new macro for shorthand
