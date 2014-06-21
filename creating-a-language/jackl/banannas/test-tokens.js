@@ -1,5 +1,8 @@
 "use strict";
 
+var tokenize = require('../tokenizer')(require('./tokens'));
+var fs = require('../fs')(__dirname);
+
 var carallel = require('carallel');
 carallel([
   fs.readFile("./syntax.jkl"),
@@ -15,11 +18,11 @@ carallel([
   }
 
   function log(token, i) {
-    if (token === ")") console.groupEnd();
-    console.log(token);
-    if (token === "(") console.group();
+    if (token === ")" || token === "]") console.groupEnd();
+    console.log(expected[i]);
+    if (token === "(" || token === "[") console.group();
     if (JSON.stringify(token) !== JSON.stringify(expected[i])) {
-      console.error(expected[i]);
+      console.error(token);
       throw new Error("Token Mismatch");
     }
   }

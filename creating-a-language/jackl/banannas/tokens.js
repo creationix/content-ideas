@@ -5,9 +5,7 @@ module.exports = [
   INTEGER,  /^(?:0|-?[1-9][0-9]*)/,
   TEXT,     /^(?:"(?:[^"\\]|\\.|\s)*")/,
   CONSTANT, /^(?:true|false|null)\b/,
-  SPLAT,    /^([^\s()[\]{}",'`:;#|\\.]+)(?:\.\.\.|…)/,
-  SYMBOL,   /^(:+)([^\s()[\]{}",'`:;#|\\.]+)/,
-  ID,       /^[^\s()[\]{}",'`:;#|\\.]+/,
+  ID,       /^(:*)([^\s()[\]{}",'`:;#|\\.…]+)(\.\.\.|…)?/,
   undefined,/^\s+/, // Skip whitespace
 ];
 
@@ -20,15 +18,12 @@ function TEXT(match) {
 }
 
 function ID(match) {
-  return ["ID", match[0]];
-}
-
-function SYMBOL(match) {
-  return ["SYMBOL", match[1].length, match[2]];
-}
-
-function SPLAT(match) {
-  return ["SPLAT", match[1]];
+  var depth = match[1].length;
+  var splat = !!match[3];
+  var name = match[2];
+  return splat ? ["ID", name, depth, splat] :
+         depth ? ["ID", name, depth] :
+                 ["ID", name];
 }
 
 function INTEGER(match) {
