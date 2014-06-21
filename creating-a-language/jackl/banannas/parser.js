@@ -1,76 +1,50 @@
 
 function parse(tokens) {
   var current = [];
-  var comments = [];
+  var expectStack = [];
   var stack = [current];
 
   tokens.forEach(function (token) {
-    if (token === "(") {
-      stack.push(current = []);
-    }
-    else if (token === ")") {
-      (current = stack[stack.length - 2]).push(stack.pop());
+    if (typeof token === "string") {
+      if (token === "(") {
+        stack.push(current = []);
+        expectStack.push(")");
+      }
+      else if (token === "[") {
+        stack.push(current = []);
+        current.push(["ID", "list"]);
+        expectStack.push("]");
+      }
+      else if (token === ")"  || token === "]") {
+        var expected = expectStack.pop();
+        if (token !== expected) {
+          throw new Error("Missing " + expected);
+        }
+        (current = stack[stack.length - 2]).push(stack.pop());
+      }
+      else {
+        throw new Error("Unexpected " + token);
+      }
     }
     else {
       if (Array.isArray(token)) {
         var type = token[0];
-        if (type === "FORM") token = new Form(token[1], flushComments());
-        else if (type === "IDENT") token = new Symbol(token[1], flushComments());
-        else if (type === "INTEGER") token = new Integer(token[1], flushComments());
-        else if (type === "COMMENT") {
-          comments.push(token[1]);
-          return;
-        }
+        // Ignore comments for now
+        if (type === "COMMENT") { return; }
       }
       current.push(token);
     }
   });
 
-  function flushComments() {
-    var string = comments.join("\n");
-    comments.length = 0;
-    return string;
-  }
-
   return current;
 
 }
 
-var tokens = [
-  ["COMMENT"," This is an anonymous function that accepts two parameters and adds them."],
-  ["COMMENT"," A new variable \"add\" is created and initialized with the fn as it's value"],
-  "(",
-    ["FORM","let"],
-    ["IDENT","add"],
-    "(",
-      ["FORM","fn"],
-      ["IDENT","a"],
-      ["IDENT","b"],
-      "(",
-        "(",
-          ["FORM","add"],
-          ["IDENT","a"],
-          ["IDENT","b"],
-        ")",
-      ")",
-    ")",
-  ")",
-  ["COMMENT"," You can call anything by having it appear first"],
-  ["COMMENT"," This calls add with the inputs 1 and 2"],
-  "(",
-    ["IDENT","add"],
-    ["INTEGER",1],
-    ["INTEGER",2],
-  ")"
-];
-
-var tree = parse(tokens);
-console.log(toJack(tree));
-
-Array.prototype.toJack = function () {
-  return "(" + this.map(toJack).join(" ") + ")";
-};
-
-function toJack(value) {
-  return value.toJack ? value.toJack() : value.toString();
-}
+var tokenize = require('../tokenizer')(require('./tokens'));
+var fs = require('../fs')(__dirname);
+fs.readFile("./syntax.jkl", function (err, code) {
+  if (err) throw err;
+  var tokens = tokenize(code);
+  var tree = parse(tokens);
+  console.log("TREE", tree);
+});
