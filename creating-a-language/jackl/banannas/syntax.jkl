@@ -7,7 +7,7 @@
 -- Call the new function and print the result.
 (print (add 1 2))
 
--- Create a macro "defn" that combines "def" and "λ"
+-- Create a macro “defn” that combines “def” and “λ”
 (macro defn (name rest…)
   [:def name [:λ rest…]]
 )

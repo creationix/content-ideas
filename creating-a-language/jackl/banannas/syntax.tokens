@@ -29,7 +29,7 @@
       2,
     ")",
   ")",
-  ["COMMENT"," Create a macro \"defn\" that combines \"def\" and \"λ\""],
+  ["COMMENT"," Create a macro “defn” that combines “def” and “λ”"],
   "(",
     ["ID","macro"],
     ["ID","defn"],
