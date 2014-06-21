@@ -13,9 +13,12 @@
 )
 
 -- Use our new macro for shorthand
-(defn add (a b)
-  (+ a b)
+(defn sub (a b)
+  (print "Subtracting!")
+  (- a b)
 )
 
 -- Also test some constants
 [true false null]
+
+(sub 5 2)
