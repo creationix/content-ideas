@@ -1,41 +1,10 @@
-var idCache = {};
-function Id(name, depth, splat) {
-  depth = depth | 0;
-  splat = !!splat;
-  var key = name + "\0" + depth + "\0" + splat;
-  var id = idCache[key];
-  if (id) return id;
-  idCache[key] = this;
-  this.name = name;
-  this.depth = depth;
-  this.splat = splat;
-}
-Id.prototype.toString = function () {
-  var str = "";
-  for (var i = 0; i < this.depth; i++) {
-    str += ":";
-  }
-  str += this.name;
-  if (this.splat) {
-    str += "…";
-  }
-  return str;
-};
+"use strict";
 
-var listId = new Id("list");
+module.exports = parse;
 
-function toCode(value) {
-  if (Array.isArray(value)) {
-    if (value[0] === listId) {
-      return "[" + value.slice(1).map(toCode).join(" ") + "]";
-    }
-    return "(" + value.map(toCode).join(" ") + ")";
-  }
-  if (typeof value === "string") {
-    return JSON.stringify(value);
-  }
-  return String(value);
-}
+var makeId = require('./id');
+
+var listId = makeId("list");
 
 function parse(tokens) {
   var current = [];
@@ -70,7 +39,7 @@ function parse(tokens) {
         // Ignore comments for now
         if (type === "COMMENT") return;
         else if (type === "TEXT") token = token[1];
-        else if (type === "ID") token = new Id(token[1], token[2], token[3]);
+        else if (type === "ID") token = makeId(token[1], token[2], token[3]);
       }
       current.push(token);
     }
@@ -78,12 +47,3 @@ function parse(tokens) {
 
   return current;
 }
-
-var tokenize = require('../tokenizer')(require('./tokens'));
-var fs = require('../fs')(__dirname);
-fs.readFile("./syntax.jkl", function (err, code) {
-  if (err) throw err;
-  var tokens = tokenize(code);
-  var tree = parse(tokens);
-  console.log(toCode(tree));
-});

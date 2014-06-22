@@ -21,6 +21,7 @@ function ID(match) {
   var depth = match[1].length;
   var splat = !!match[3];
   var name = match[2];
+  if (name === "lambda") name = "λ";
   return splat ? ["ID", name, depth, splat] :
          depth ? ["ID", name, depth] :
                  ["ID", name];

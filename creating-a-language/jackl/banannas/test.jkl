@@ -1,0 +1,13 @@
+(print "Hello World")
+(def x 42)
+(def y 10)
+(def show (lambda (a b)
+  [
+    :+ (+ x y)
+    :- (- x y)
+    :* (* x y)
+    :/ (/ x y)
+    :% (% x y)
+  ]
+))
+(show x y)
