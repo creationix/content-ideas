@@ -2,13 +2,14 @@
 
 var tokenize = require('../tokenizer')(require('./tokens'));
 var fs = require('../fs')(__dirname);
+var run = require('../gen-run');
 
-var carallel = require('carallel');
-carallel([
-  fs.readFile("./syntax.jkl"),
-  fs.readFile("./syntax.tokens"),
-], function (err, tests) {
-  if (err) throw err;
+run(function* () {
+  var tests = yield [
+    fs.readFile("./syntax.jkl"),
+    fs.readFile("./syntax.tokens"),
+  ];
+
   for (var i = 0; i < tests.length; i += 2) {
     var source = tests[i];
     var expected = JSON.parse(tests[i + 1]);
@@ -26,5 +27,4 @@ carallel([
       throw new Error("Token Mismatch");
     }
   }
-
 });
