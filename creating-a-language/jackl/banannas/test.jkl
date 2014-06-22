@@ -1,25 +1,17 @@
+
 (print "Hello World")
-
-(print (+ 1 2))
-
-(def name (prompt "Enter a name"))
-(print "Hello" name)
-(alert "message" "Bye")
-(print (confirm "Are you sure?"))
-
--- -- (print "Hello World")
--- -- (def x 42)
--- -- (def y 10)
--- -- (def show (lambda (a b)
--- --   [
--- --     :+ (+ x y)
--- --     :- (- x y)
--- --     :* (* x y)
--- --     :/ (/ x y)
--- --     :% (% x y)
--- --   ]
--- -- ))
--- -- (show x y)
+(def x 42)
+(def y 10)
+(def show (lambda (a b)
+  [
+    :+ (+ x y)
+    :- (- x y)
+    :* (* x y)
+    :/ (/ x y)
+    :% (% x y)
+  ]
+))
+(show x y)
 
 -- -- (def log (lambda (e command...)
 -- --   (print "e" e)

@@ -45,7 +45,7 @@ subForm.toString = mathToString;
 function* subForm() {
   /*jshint validthis: true*/
   return yield* mathOp.call(this, arguments, "sub", function (sum, num) {
-    return sum + num;
+    return sum - num;
   });
 }
 
