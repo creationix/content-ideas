@@ -13,42 +13,39 @@ function dialogToString() {
 }
 
 promptForm.toString = dialogToString;
-function* promptForm() {
+function* promptForm(message, value) {
   /*jshint validthis: true*/
-  var args = yield* this.list.apply(this, arguments);
-  if (args.length < 1 || args.length > 2) {
+  if (arguments.length < 1 || arguments.length > 2) {
     throw new Error("please pass in prompt message and optional value");
   }
   return yield function (callback) {
-    dialog.prompt(args[0], args[1] || "", function (result) {
+    dialog.prompt(message, value || "", function (result) {
       callback(null, result);
     });
   };
 }
 
 alertForm.toString = dialogToString;
-function* alertForm() {
+function* alertForm(title, message) {
   /*jshint validthis: true*/
-  var args = yield* this.list.apply(this, arguments);
-  if (args.length !== 2) {
+  if (arguments.length !== 2) {
     throw new Error("please pass in title and message");
   }
   return yield function (callback) {
-    dialog.alert(args[0], args[1] || "", function () {
+    dialog.alert(title, message, function () {
       callback(null, null);
     });
   };
 }
 
 confirmForm.toString = dialogToString;
-function* confirmForm() {
+function* confirmForm(question) {
   /*jshint validthis: true*/
-  var args = yield* this.list.apply(this, arguments);
-  if (args.length !== 1) {
+  if (arguments.length !== 1) {
     throw new Error("please pass in question to confirm");
   }
   return yield function (callback) {
-    dialog.confirm(args[0], function (confirm) {
+    dialog.confirm(question, function (confirm) {
       callback(null, !!confirm);
     });
   };

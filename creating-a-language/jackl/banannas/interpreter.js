@@ -10,8 +10,6 @@ var builtins = {
 
 };
 
-var macros = {};
-
 function builtinToString() {
   /*jshint validthis: true*/
   return "<<native " + this.name + ">>";
@@ -23,19 +21,30 @@ function userToString() {
 }
 
 printForm.toString = builtinToString;
+var arrayMap = [].map;
 function* printForm() {
   /*jshint validthis: true*/
-  var args = yield* listForm.apply(this, arguments);
-  console.log.apply(console, args.map(stringify));
+  console.log.apply(console, arrayMap.call(arguments, stringify));
   return null;
 }
 
 listForm.toString = builtinToString;
+listForm.raw = true;
+var arraySlice = [].slice;
 function* listForm() {
   /*jshint validthis: true*/
   var args = [];
-  for (var i = 0; i < arguments.length; i++) {
-    var item = arguments[i];
+  var input = arraySlice.call(arguments);
+  for (var i = 0; i < input.length; i++) {
+    var item = input[i];
+    if (Array.isArray(item) && item[0] in macros) {
+      var macro = macros[item[0]];
+      var newPieces = yield* macro.apply(this, item.slice(1));
+      input.splice(i, 1, newPieces);
+      i--;
+      console.warn(input.map(stringify).join("\n"))
+      continue;
+    }
     if (isVar(item) && item.splat) {
       if (!(item.name in this)) {
         throw new Error("Undefined variable: " + item.name);
@@ -53,6 +62,7 @@ function* listForm() {
 }
 
 defForm.toString = builtinToString;
+defForm.raw = true;
 function* defForm(name, ...args) {
   /*jshint validthis: true*/
   var context = this;
@@ -70,6 +80,7 @@ function* defForm(name, ...args) {
 
 lambdaForm.toString = builtinToString;
 var count = 0;
+lambdaForm.raw = true;
 function* lambdaForm(names, ...body) {
   /*jshint validthis: true*/
   if (!Array.isArray(names)) {
@@ -90,11 +101,16 @@ function* lambdaForm(names, ...body) {
     names[i] = item.name;
   }
   var context = Object.create(this);
+  return createLambda(context, names, splatIndex, body);
+}
+
+function createLambda(context, names, splatIndex, body, raw) {
   var id = λ.id = ++count;
   λ.body = body;
   λ.toString = userToString;
   return λ;
   function* λ() {
+    /*jshint validthis: true*/
     var args = yield* listForm.apply(this, arguments);
     var splatNum;
     if (splatIndex < 0) {
@@ -117,16 +133,44 @@ function* lambdaForm(names, ...body) {
       }
       else context[names[j++]] = args[i];
     }
-    return yield* block.call(context, body);
+    var results = yield* listForm.apply(context, body);
+    if (raw) return results;
+    if (!results.length) return null;
+    return results[results.length - 1];
   }
 }
 
+var macros = {};
 macroForm.toString = builtinToString;
+macroForm.raw = true;
 function* macroForm(name, inputs, ...body) {
-  /*jshint validthis: true*/
-  var context = this;
-  throw "TODO: macroForm";
+  if (name in macros) {
+    throw new Error("Macro already exists with name: " + name);
+  }
+  if (!Array.isArray(inputs)) {
+    throw new Error("Macro inputs must be a list");
+  }
+  if (!inputs.every(isVar)) {
+    throw new Error("Macro inputs must be variable names");
+  }
+  var splatIndex = -1;
+  for (var i = 0; i < inputs.length; i++) {
+    var item = inputs[i];
+    if (item.splat) {
+      if (splatIndex < 0) splatIndex = i;
+      else {
+        throw new Error("Only one splat variable allowed in lambda definition");
+      }
+    }
+    inputs[i] = item.name;
+  }
+
+  var context = {
+    list: listForm
+  };
+  macros[name] = createLambda(context, inputs, splatIndex, body, true);
 }
+
 
 var makeId = require('./id');
 var isId = makeId.is;
@@ -156,16 +200,11 @@ function* execItem(item) {
   if (typeof first !== "function") {
     throw new Error("form must start with function");
   }
-  return yield* first.apply(this, item.slice(1));
-}
-
-function* block(list) {
-  /*jshint validthis: true*/
-  var value = null;
-  for (var i = 0; i < list.length; i++) {
-    value = yield* execItem.call(this, list[i]);
+  var args = item.slice(1);
+  if (!first.raw) {
+    args = yield* listForm.apply(this, args);
   }
-  return value;
+  return yield* first.apply(this, args);
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -188,7 +227,8 @@ run(function* () {
   mixin(require('./lib/math'), context);
   mixin(require('./lib/dialog'), context);
   context = Object.create(context);
-  var result = yield* block.call(context, tree);
+  var results = yield* listForm.apply(context, tree);
+  var result = results.length ? results[results.length - 1] : null;
   console.info(stringify(result));
   console.log(context);
 });

@@ -15,10 +15,12 @@ function mathToString() {
 
 function* mathOp(args, name, fn, sum) {
   /*jshint validthis: true*/
-  args = yield* this.list.apply(this, args);
   if (sum === undefined) {
     if (args.length !== 2) {
       throw new Error(name + " requires exactly two arguments");
+    }
+    if (!Array.isArray(args)) {
+      args = [].slice.call(args);
     }
     sum = args.shift();
   }

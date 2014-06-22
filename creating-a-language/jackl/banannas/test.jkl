@@ -1,24 +1,30 @@
+(macro twice (action)
+   [action]
+   [action]
+)
+(twice (print "hi"))
 
-(print "Hello World")
-(def x 42)
-(def y 10)
-(def show (lambda (a b)
-  [
-    :+ (+ x y)
-    :- (- x y)
-    :* (* x y)
-    :/ (/ x y)
-    :% (% x y)
-  ]
-))
-(show x y)
 
--- -- (def log (lambda (e command...)
--- --   (print "e" e)
--- --   (print "command" command...)
--- -- ))
+-- (print "Hello World")
+-- (def x 42)
+-- (def y 10)
+-- (def show (lambda (a b)
+--   [
+--     :+ (+ x y)
+--     :- (- x y)
+--     :* (* x y)
+--     :/ (/ x y)
+--     :% (% x y)
+--   ]
+-- ))
+-- (show x y)
 
--- -- (log 42 print "Hi")
+-- (def log (lambda (e command...)
+--   (print "e" e)
+--   (print "command" command...)
+-- ))
+
+-- (log 42 print "Hi")
 
 
 -- -- (def command_1 :print)
