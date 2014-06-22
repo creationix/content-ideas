@@ -101,27 +101,33 @@ function lambdaForm(args, callback) {
   return callback(null, λ);
   function λ(args, callback) {
     var parentContext = this;
+    var splatNum;
     if (splatIndex < 0) {
       if (args.length !== names.length) {
-        return callback(new Error("Proc 0x" + id.toString(16) + " expected exactly " + names.length + "arguments"))
+        return callback(new Error("Proc 0x" + id.toString(16) + " expected exactly " + names.length + "arguments"));
       }
+    }
     else {
-      if (args.length < names.length - 1) {
-
+      splatNum = args.length - names.length + 1;
+      if (splatNum < 0) {
+        return callback(new Error("Proc 0x" + id.toString(16) + " expected at least " + (names.length - 1) + "arguments"));
       }
     }
-      carallel(args.map(function (item) {
-        return execItem(parentContext, item);
-      }), onArgs);
-    }
-    console.log("TODO", {
-      splatIndex: splatIndex,
-      names: names,
-      code: body.map(stringify),
-      context: context
+    carallel(args.map(function (item) {
+      return execItem(parentContext, item);
+    }), function (err, args) {
+      var j = 0;
+      var splat = splatIndex >= 0 ? [] : null;
+      for (var i = 0; i < args.length; i++) {
+        if (j === splatIndex) {
+          if (splatNum--) splat.push(args[i]);
+          else context[names[j++]] = splat;
+        }
+        else context[names[j++]] = args[i];
+      }
+      console.log(context);
+      block(context, body, callback);
     });
-
-    block(context, body, callback);
   }
 }
 
