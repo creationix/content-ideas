@@ -8,7 +8,10 @@ run(function* () {
   console.log("Loading sample.jkl");
   var list = yield* readFile(fs, "../samples/sample.jkl");
   console.log(write(list));
-  var context = Object.create(require('../lib/builtins'));
+  var context = Object.create(mixin({},
+    require('../lib/builtins'),
+    require('../lib/math')
+  ));
   var result = yield* exec.apply(context, list);
   console.log(write(result));
 });
