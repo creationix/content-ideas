@@ -11,9 +11,12 @@ module.exports = function toCode(value) {
     }
     return open + body.map(toCode).join(" ") + close;
   }
-  if (!value || typeof value !== "object") {
-    return value;
+  if (typeof value === "function") {
+    return "<" + value.name + ">";
   }
-  if (value.id) return value.id;
+  if (!value || typeof value !== "object") {
+    return JSON.stringify(value);
+  }
+  if (value && typeof value === "object" &&value.id) return value.id;
   return JSON.stringify(value.constant);
 };

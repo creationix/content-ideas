@@ -7,17 +7,15 @@
 ))
 
 -- Call the new function and print the result.
--- (print (add 1 2))
+(print (add 1 2))
 
-(add 3 4)
+-- We can also define a function directly
+(def (sub a b)
+  (print "Subtracting!")
+  (- a b)
+)
 
--- -- We can also define a function directly
--- (def (sub a b)
---   (print "Subtracting!")
---   (- a b)
--- )
+-- Test some constants
+[true false null]
 
--- -- Test some constants
--- [true false null]
-
--- (sub 5 2)
+(sub 5 2)
