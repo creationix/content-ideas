@@ -1,3 +1,4 @@
+(print "Hello World")
 
 -- Create a function and assign to a local variable.
 (def add (λ (a b)
@@ -6,15 +7,17 @@
 ))
 
 -- Call the new function and print the result.
-(print (add 1 2))
+-- (print (add 1 2))
 
--- We can also define a function directly
-(def (sub a b)
-  (print "Subtracting!")
-  (- a b)
-)
+(add 3 4)
 
--- Test some constants
-[true false null]
+-- -- We can also define a function directly
+-- (def (sub a b)
+--   (print "Subtracting!")
+--   (- a b)
+-- )
 
-(sub 5 2)
+-- -- Test some constants
+-- [true false null]
+
+-- (sub 5 2)
