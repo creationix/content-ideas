@@ -1,0 +1,10 @@
+[submodule "modules/gen-run"]
+	url = git@github.com:creationix/gen-run.git
+	ref = refs/heads/master
+	prefix = hws22etm-159thvu.bv8r
+	path = modules/gen-run
+[submodule "modules/tedit-fs"]
+	url = git@github.com:creationix/tedit-fs.git
+	ref = refs/heads/master
+	prefix = hws24jfs-svgzk8.csijk
+	path = modules/tedit-fs
