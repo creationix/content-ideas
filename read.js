@@ -24,7 +24,7 @@ var rules = [
 
 function TEXT(match) {
   var json = match[0].replace(/\n/g, "\\n").replace(/\r/g, "\\r");
-  return ["text", JSON.parse(json)];
+  return ["constant", JSON.parse(json)];
 }
 
 function ID(match) {
