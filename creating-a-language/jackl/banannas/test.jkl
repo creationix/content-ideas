@@ -1,44 +1,4 @@
-(macro twice (action)
-   [action]
-   [action]
+
+(for* (y 3 x 4)
+  print(:x x :y y)
 )
-(twice (print "hi"))
-
-
--- (print "Hello World")
--- (def x 42)
--- (def y 10)
--- (def show (lambda (a b)
---   [
---     :+ (+ x y)
---     :- (- x y)
---     :* (* x y)
---     :/ (/ x y)
---     :% (% x y)
---   ]
--- ))
--- (show x y)
-
--- (def log (lambda (e command...)
---   (print "e" e)
---   (print "command" command...)
--- ))
-
--- (log 42 print "Hi")
-
-
--- -- (def command_1 :print)
--- -- (def command_2 "HI")
--- -- (command_1 command_2)
-
--- -- :def 0 1
--- -- :print 1*
--- -- :list 1*
--- -- :lambda 0 0*
--- -- :macro 0 0 0*
-
--- (def name (prompt "Enter your name"))
--- (print "Hello" name)
--- (alert "Alert" "This is an alert!")
--- (print (confirm "Do you like me?"))
--- (print "done")

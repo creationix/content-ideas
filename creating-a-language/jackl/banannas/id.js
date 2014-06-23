@@ -2,9 +2,13 @@
 
 var idCache = {};
 exports = module.exports = makeId;
-exports.is = function (value) {
+exports.isId = function (value) {
   return value instanceof Id;
 };
+exports.isVar = function (value) {
+  return value instanceof Id && value.depth === 0;
+};
+
 
 function makeId(name, depth, splat) {
   depth = depth|0;

@@ -1,13 +1,16 @@
 "use strict";
+var stringify = require('../stringify');
+var makeId = require('../id');
+var isId = makeId.isId;
+var isVar = makeId.isVar;
 
-var builtins = {
+module.exports = {
   print: printForm,
 
   list: listForm,
   def: defForm,
   λ: lambdaForm,
   macro: macroForm,
-
 };
 
 function builtinToString() {
@@ -20,17 +23,18 @@ function userToString() {
   return "<<proc 0x" + this.id.toString(16) + ">>";
 }
 
-printForm.toString = builtinToString;
 var arrayMap = [].map;
+var arraySlice = [].slice;
+
+printForm.toString = builtinToString;
 function* printForm() {
-  /*jshint validthis: true*/
+  /*jshint noyield:true*/
   console.log.apply(console, arrayMap.call(arguments, stringify));
   return null;
 }
 
 listForm.toString = builtinToString;
 listForm.raw = true;
-var arraySlice = [].slice;
 function* listForm() {
   /*jshint validthis: true*/
   var args = [];
@@ -42,7 +46,6 @@ function* listForm() {
       var newPieces = yield* macro.apply(this, item.slice(1));
       input.splice(i, 1, newPieces);
       i--;
-      console.warn(input.map(stringify).join("\n"))
       continue;
     }
     if (isVar(item) && item.splat) {
@@ -78,11 +81,11 @@ function* defForm(name, ...args) {
   return args[0];
 }
 
-lambdaForm.toString = builtinToString;
 var count = 0;
+lambdaForm.toString = builtinToString;
 lambdaForm.raw = true;
 function* lambdaForm(names, ...body) {
-  /*jshint validthis: true*/
+  /*jshint validthis:true noyield:true*/
   if (!Array.isArray(names)) {
     throw new Error("lambda args must be in list");
   }
@@ -144,6 +147,7 @@ var macros = {};
 macroForm.toString = builtinToString;
 macroForm.raw = true;
 function* macroForm(name, inputs, ...body) {
+  /*jshint noyield:true*/
   if (name in macros) {
     throw new Error("Macro already exists with name: " + name);
   }
@@ -172,13 +176,6 @@ function* macroForm(name, inputs, ...body) {
 }
 
 
-var makeId = require('./id');
-var isId = makeId.is;
-
-function isVar(item) {
-  return isId(item) && item.depth === 0;
-}
-
 function* execItem(item) {
   /*jshint validthis: true*/
   if (isId(item)) {
@@ -204,31 +201,9 @@ function* execItem(item) {
   if (!first.raw) {
     args = yield* listForm.apply(this, args);
   }
-  return yield* first.apply(this, args);
-}
-
-///////////////////////////////////////////////////////////////////
-
-function mixin(source, target) {
-  for (var key in source) {
-    target[key] = source[key];
+  var result = yield* first.apply(this, args);
+  if (result === undefined) {
+    throw new Error("Functions must not return undefined");
   }
+  return result;
 }
-
-var run = require('../gen-run');
-var stringify = require('./stringify');
-var read = require('./read');
-var fs = require('../fs')(__dirname);
-run(function* () {
-  var code = yield fs.readFile("./test.jkl");
-  var tree = read(code);
-  console.info(tree.map(stringify).join("\n"));
-  var context = Object.create(builtins);
-  mixin(require('./lib/math'), context);
-  mixin(require('./lib/dialog'), context);
-  context = Object.create(context);
-  var results = yield* listForm.apply(context, tree);
-  var result = results.length ? results[results.length - 1] : null;
-  console.info(stringify(result));
-  console.log(context);
-});
