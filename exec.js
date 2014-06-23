@@ -31,8 +31,9 @@ function* execItem(item) {
     var args;
     if (fn.raw) args = item.slice(1);
     else {
+      args = [];
       for (var i = 1; i < item.length; i++) {
-        args[i - 1] = yield* execItem.call(this, args[i]);
+        args[i - 1] = yield* execItem.call(this, item[i]);
       }
     }
 
@@ -40,14 +41,17 @@ function* execItem(item) {
       return yield* fn.apply(this, args);
     }
     catch (err) {
-      if (err.message) throw err;
-      throw error(item, "executing", err);
+      if (err.message) {
+        console.error(err.stack);
+        throw err;
+      }
+      throw error(item[0], "executing", err);
     }
   }
 
   if (item.id) {
     if (!(item.id in this)) {
-      throw error(item, "executing", "Undefined variable '" + item.id + "'");
+      throw error(item, "executing", "Undefined variable '" + item.id + "'", TypeError);
     }
     return this[item.id];
   }
