@@ -2,11 +2,14 @@
 // This module exports a function that consumes a string of code and returns
 // a parsed list.
 
+
 exports = module.exports = readString;
 exports.file = function* readFile(fs, path) {
   var code = yield* fs.readFile(path);
   return readString(code, path);
 };
+
+var error = require('./error');
 
 function readString(string, path) {
   var tokens = tokenize(string, path);
@@ -42,12 +45,14 @@ function CHAR(match) {
 }
 
 function tokenize(string, filename) {
-  var tokens = [];
-  var length = rules.length;
   var scope = {
     string: string,
     filename: filename
   };
+  var tokens = [];
+  tokens.offset = 0;
+  tokens.scope = scope;
+  var length = rules.length;
   var offset = 0;
   if (rules.postfix) string += rules.postfix;
   while (offset < string.length) {
@@ -76,36 +81,6 @@ function tokenize(string, filename) {
   return tokens;
 }
 
-function error(token, title, inline, CustomError) {
-  title = title || "";
-  inline = inline || "";
-  CustomError = CustomError || Error;
-  var string = token.scope.string;
-  var filename = token.scope.filename;
-  var offset = token.offset;
-  var before = string.substring(0, offset).split("\n");
-  var after = string.substring(offset).split("\n");
-  var line = before.pop() || "";
-  var column = line.length;
-  line += after.shift() || "";
-  var row = before.length;
-  var above = before.pop() || "";
-  var below = after.shift() || "";
-  var indent = "";
-  for (var i = 0; i < column; i++) {
-    indent += "-";
-  }
-  return new CustomError(title + " at (" + filename + ":" + (row + 1) + ":" + (column + 1) + ")\n" +
-    above + "\n" +
-    line + "\n" +
-    indent + "^ " + inline + "\n" +
-    below
-  );
-}
-
-
-  // throw error(tokens[30], "reading", "Unexpected parenthesis!", SyntaxError);
-
 function parse(tokens) {
   var current = [];
   var expectStack = [];
@@ -115,11 +90,15 @@ function parse(tokens) {
     if (token.char) {
       if (token.char === "(") {
         stack.push(current = []);
+        current.offset = token.offset;
+        current.scope = token.scope;
         token.closer = ")";
         expectStack.push(token);
       }
       else if (token.char === "[") {
         stack.push(current = []);
+        current.offset = token.offset;
+        current.scope = token.scope;
         current.push({
           id: "list",
           offset: token.offset,
