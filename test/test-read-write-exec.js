@@ -5,16 +5,16 @@ var write = require('../write');
 var exec = require('../exec');
 
 run(function* () {
-  console.info("Loading sample.jkl");
-  var list = yield* readFile(fs, "../samples/macro.jkl");
-  console.info(write(list));
+  console.info("Running sample.jkl");
+  var list = yield* readFile(fs, "../samples/maze.jkl");
+  // console.info(write(list));
   var context = Object.create(mixin({},
     require('../lib/builtins'),
     require('../lib/math'),
     require('../lib/iterators')
   ));
   var result = yield* exec.apply(context, list);
-  console.info(write(result));
+  console.info("\n"+result+"\n");
 });
 
 function mixin(target) {

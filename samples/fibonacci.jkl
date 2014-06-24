@@ -1,6 +1,6 @@
 -- Naive fibonacci using recursion.
 (def (fib n)
-  (if (< n 2)
+  (? (< n 2)
     n
     (+
       (fib (- n 1))

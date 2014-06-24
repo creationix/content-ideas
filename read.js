@@ -23,7 +23,7 @@ var rules = [
   null,     /^--(.*)/, // Ignore comments
   TEXT,     /^(?:"(?:[^"\\]|\\.)*")/,
   CONSTANT, /^(?:0|-?[1-9][0-9]*|true|false|null)\b/,
-  ID,       /^[^\s()[\]{}",'`:;#|\\.…]+/,
+  ID,       /^[^\s()[\]{}",'`:;#|\\]+/,
   null,     /^\s+/, // Skip whitespace
   CHAR,     /^./, // Everything else is sent as-is
 ];

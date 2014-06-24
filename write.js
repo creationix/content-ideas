@@ -22,6 +22,6 @@ module.exports = function toCode(value) {
   if (!value || typeof value !== "object") {
     return JSON.stringify(value);
   }
-  if (value && typeof value === "object" &&value.id) return value.id;
+  if (value && typeof value === "object" && value.id) return value.id;
   return JSON.stringify(value.constant);
 };
