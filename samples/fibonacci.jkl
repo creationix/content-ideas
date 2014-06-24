@@ -1,0 +1,15 @@
+-- calculate
+(def (fib n)
+  (if (< n 2)
+    n
+    (+
+      (fib (- n 1))
+      (fib (- n 2))
+      -- (fib (- n 2))
+    )
+  )
+)
+
+(for (i 10)
+  (print i (fib i))
+)
