@@ -22,15 +22,15 @@
  (exec code)
 )
 
--- Call using quote
-(qtwice (quote (print "sure")))
+-- Call using quote sugar
+(qtwice :(print "sure"))
 
 -- Or list sugar in this case
 (qtwice [print "thing"])
 
 -- We can make an unless form that acts like an inverted if
 (macro (unless expression body)
-  [[if expression null body]]
+  [[:if expression null body]]
 )
 
 (unless false (print "Me"))

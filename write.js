@@ -4,10 +4,15 @@ module.exports = function toCode(value) {
     var body = value;
     var open = "(";
     var close = ")";
-    if (value[0] && typeof value[0] === "object" && value[0].id === "list") {
-      body = body.slice(1);
-      open = "[";
-      close = "]";
+    if (value[0] && typeof value[0] === "object") {
+      if (value[0].id === "escape") {
+        return ":" + toCode(value[1]);
+      }
+      if (value[0].id === "list") {
+        body = body.slice(1);
+        open = "[";
+        close = "]";
+      }
     }
     return open + body.map(toCode).join(" ") + close;
   }

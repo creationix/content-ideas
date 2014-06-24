@@ -2,6 +2,8 @@
 // This module exports a function that consumes a string of code and returns
 // a parsed list.
 
+var write = require('./write');
+
 
 exports = module.exports = readString;
 exports.file = function* readFile(fs, path) {
@@ -15,6 +17,7 @@ function readString(string, path) {
   var tokens = tokenize(string, path);
   return parse(tokens);
 }
+
 
 var rules = [
   null,     /^--(.*)/, // Ignore comments
@@ -85,26 +88,33 @@ function parse(tokens) {
   var current = [];
   var expectStack = [];
   var stack = [current];
+  var escape = false;
 
   tokens.forEach(function (token) {
     if (token.char) {
-      if (token.char === "(") {
-        stack.push(current = []);
-        current.offset = token.offset;
-        current.scope = token.scope;
-        token.closer = ")";
-        expectStack.push(token);
+      if (token.char === ":") {
+        escape = true;
+        return;
       }
-      else if (token.char === "[") {
+      if (token.char === "(" || token.char === "[") {
         stack.push(current = []);
         current.offset = token.offset;
         current.scope = token.scope;
-        current.push({
-          id: "list",
-          offset: token.offset,
-          scope: token.scope
-        });
-        token.closer = "]";
+        if (token.char === "[") {
+          current.push({
+            id: "list",
+            offset: token.offset,
+            scope: token.scope
+          });
+          token.closer = "]";
+        }
+        else {
+          token.closer = ")";
+        }
+        if (escape) {
+          token.escape = true;
+          escape = false;
+        }
         expectStack.push(token);
       }
       else if (token.char === ")"  || token.char === "]") {
@@ -115,13 +125,29 @@ function parse(tokens) {
         if (token.char !== expected.closer) {
           throw error(token, "parsing", "Expected '" + expected.closer + "', but found '" + token.char + "'", SyntaxError);
         }
-        (current = stack[stack.length - 2]).push(stack.pop());
+        var item = stack.pop();
+        if (expected.escape) {
+          item = [{
+            id: "escape",
+            offset: item.offset,
+            scope: item.scope
+          }, item];
+        }
+        (current = stack[stack.length - 1]).push(item);
       }
       else {
         throw error(token, "parsing", "Unexpected character!", SyntaxError);
       }
     }
     else {
+      if (escape) {
+        token = [{
+          id: "escape",
+          offset: token.offset,
+          scope: token.scope
+        }, token];
+        escape = false;
+      }
       current.push(token);
     }
   });
