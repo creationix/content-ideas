@@ -1,0 +1,37 @@
+-- Actions can be duplicated using first-class functions
+(def (ftwice fn)
+ (fn) (fn)
+)
+
+-- But the usage syntax is ugly
+(ftwice (lambda ()
+  (print "hi")
+))
+
+-- Instead we can use a raw lambda (aka macro)
+(macro (twice action)
+  [action action]
+)
+
+-- And generate code!
+(twice (print "bye"))
+
+-- But this could have also been done using just quote and eval
+(def (qtwice code)
+ (exec code)
+ (exec code)
+)
+
+-- Call using quote
+(qtwice (quote (print "sure")))
+
+-- Or list sugar in this case
+(qtwice [print "thing"])
+
+-- We can make an unless form that acts like an inverted if
+(macro (unless expression body)
+  [[if expression null body]]
+)
+
+(unless false (print "Me"))
+(unless true (print "or not"))

@@ -6,7 +6,7 @@ var exec = require('../exec');
 
 run(function* () {
   console.info("Loading sample.jkl");
-  var list = yield* readFile(fs, "../samples/fibonacci.jkl");
+  var list = yield* readFile(fs, "../samples/macro.jkl");
   console.info(write(list));
   var context = Object.create(mixin({},
     require('../lib/builtins'),
