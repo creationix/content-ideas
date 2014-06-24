@@ -1,8 +1,12 @@
 "use strict";
 
-module.exports = function error(token, title, inline, CustomError) {
-  title = title || "";
-  inline = inline || "";
+module.exports = function error(token, name, message, CustomError) {
+  name = name || __filename;
+  if (!message) throw new TypeError("error handler requires message");
+  message = message || "";
+  if (!token || typeof token !== "object" || !token.scope) {
+    throw message;
+  }
   CustomError = CustomError || Error;
   var string = token.scope.string;
   var filename = token.scope.filename;
@@ -19,10 +23,10 @@ module.exports = function error(token, title, inline, CustomError) {
   for (var i = 0; i < column; i++) {
     indent += "-";
   }
-  return new CustomError(title + " at (" + filename + ":" + (row + 1) + ":" + (column + 1) + ")\n" +
+  return new CustomError(name + " at (" + filename + ":" + (row + 1) + ":" + (column + 1) + ")\n" +
     above + "\n" +
     line + "\n" +
-    indent + "^ " + inline + "\n" +
+    indent + "^ " + message + "\n" +
     below
   );
 };

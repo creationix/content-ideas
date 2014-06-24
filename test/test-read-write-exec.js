@@ -6,11 +6,12 @@ var exec = require('../exec');
 
 run(function* () {
   console.info("Loading sample.jkl");
-  var list = yield* readFile(fs, "../samples/sample.jkl");
+  var list = yield* readFile(fs, "../samples/loops.jkl");
   console.info(write(list));
   var context = Object.create(mixin({},
     require('../lib/builtins'),
-    require('../lib/math')
+    require('../lib/math'),
+    require('../lib/iterators')
   ));
   var result = yield* exec.apply(context, list);
   console.info(write(result));

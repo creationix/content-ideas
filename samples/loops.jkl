@@ -1,3 +1,10 @@
-(for (n 10)
-  (print n)
+
+(for (n 3 m 5)
+  (print n m)
+  (+ n m)
+)
+
+(for* (n 3 m 5)
+  (print n m)
+  (+ n m)
 )
