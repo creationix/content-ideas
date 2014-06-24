@@ -1,19 +1,4 @@
--- Naive fibonacci using recursion.
-(def (fib n)
-  (if (< n 2)
-    n
-    (+
-      (fib (- n 1))
-      (fib (- n 2))
-      -- (fib (- n 2))
-    )
-  )
-)
 
--- Test the first 10 inputs.
-(for (i 10)
-  (print i (fib i))
-)
 
 -- More effecient and infinate fibonacci generator
 (def (fibber)
@@ -27,6 +12,27 @@
 )
 
 -- Get the first 10 items from the generator.
-(for (i 10 j (fibber))
+(map (i 76 j (fibber))
   (print i j)
+  (sleep 10)
+  [i j]
+)
+
+-- Naive fibonacci using recursion.
+(def (fib n)
+  (if (< n 2)
+    n
+    (+
+      (fib (- n 1))
+      (fib (- n 2))
+      -- (fib (- n 2))
+    )
+  )
+)
+
+-- Test the first 10 inputs.
+-- WARNING, this will chew some CPU!
+(for (i 14)
+  (print i (fib i))
+  (sleep 10)
 )
