@@ -2,7 +2,6 @@
 module.exports = execBlock;
 
 var error = require('./error');
-var write = require('./write');
 
 // inputs is array of items to eval.  Returns last expression value
 // "this" scope is the context of local variables.
@@ -16,14 +15,6 @@ function* execBlock() {
     }
   }
   return value;
-}
-
-function map(obj, fn) {
-  var out = {};
-  Object.keys(obj).forEach(function (name) {
-    out[name] = fn(obj[name]);
-  });
-  return out;
 }
 
 function* execItem(item) {
