@@ -49,7 +49,12 @@ function* execItem(item) {
     }
 
     try {
-      result = yield* fn.apply(this, args);
+      if (fn.constructor === Function) {
+        result = fn.apply(this, args);
+      }
+      else {
+        result = yield* fn.apply(this, args);
+      }
     }
     catch (err) {
       if (err.message) {
