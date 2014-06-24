@@ -4,7 +4,7 @@ module.exports = function toCode(value) {
     var body = value;
     var open = "(";
     var close = ")";
-    if (value[0].id === "list") {
+    if (value[0] && typeof value[0] === "object" && value[0].id === "list") {
       body = body.slice(1);
       open = "[";
       close = "]";

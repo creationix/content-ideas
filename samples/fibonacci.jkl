@@ -15,7 +15,7 @@
   (print i (fib i))
 )
 
--- More effecient generator
+-- More effecient and infinate fibonacci generator
 (def (fibber)
   (def i 0)
   (def j 1)
@@ -23,11 +23,10 @@
     (def t (+ i j))
     (set i j)
     (set j t)
-    t
   )
 )
 
 -- Get the first 10 items from the generator.
-(for (i 10 j fibber)
+(for (i 10 j (fibber))
   (print i j)
 )
