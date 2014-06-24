@@ -1,4 +1,4 @@
--- calculate
+-- Naive fibonacci using recursion.
 (def (fib n)
   (if (< n 2)
     n
@@ -10,6 +10,24 @@
   )
 )
 
+-- Test the first 10 inputs.
 (for (i 10)
   (print i (fib i))
+)
+
+-- More effecient generator
+(def (fibber)
+  (def i 0)
+  (def j 1)
+  (λ ()
+    (def t (+ i j))
+    (set i j)
+    (set j t)
+    t
+  )
+)
+
+-- Get the first 10 items from the generator.
+(for (i 10 j fibber)
+  (print i j)
 )
