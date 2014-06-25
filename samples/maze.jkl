@@ -12,8 +12,8 @@
 -- ██  ██      ██
 -- ██████████████
 
-(def width 10)
-(def height 10)
+(def width 30)
+(def height 30)
 (def size (* width height))
 
 -- Cells point to parent
@@ -53,7 +53,6 @@
 (def h (* height 2))
 (join "\n" (map (y (+ h 1))
   (join "" (map (x (+ w 1))
-    (sleep 1)
     (¿ "  " "██" (or
       -- Four outer edges are always true
       (= x 0) (= y 0) (= x w) (= y h)
