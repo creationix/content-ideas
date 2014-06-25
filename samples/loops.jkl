@@ -21,7 +21,7 @@
   (+ n m)
 )
 
-(map* (n 3 m 5)
+(write (map* (n 3 m 5)
   (print n m)
   (+ n m)
-)
+))

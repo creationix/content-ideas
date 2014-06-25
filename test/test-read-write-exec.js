@@ -14,7 +14,7 @@ run(function* () {
     require('../lib/iterators')
   ));
   var result = yield* exec.apply(context, list);
-  console.info("\n"+result+"\n");
+  console.info(result);
 });
 
 function mixin(target) {
