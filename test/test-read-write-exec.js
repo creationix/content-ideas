@@ -5,8 +5,8 @@ var exec = require('../exec');
 
 run(function* () {
   console.info("Running sample.jkl");
+  var before = Date.now();
   var list = yield* readFile(fs, "../samples/maze.jkl");
-  // console.info(write(list));
   var context = Object.create(mixin({},
     require('../lib/builtins'),
     require('../lib/math'),
@@ -14,6 +14,7 @@ run(function* () {
   ));
   var result = yield* exec.apply(context, list);
   console.info(result);
+  console.log(Date.now() - before, "ms elapsed");
 });
 
 function mixin(target) {

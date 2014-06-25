@@ -23,19 +23,20 @@
 (def walls (map (i size) [true true]))
 
 -- Define the sequence of index and right/left
+(def ww (- width 1))
+(def hh (- height 1))
 (def sequence (shuffle (concat
   (map (i size)
-    (if (< (% i width) (- width 1)) [true i])
+    (if (< (% i width) ww) [true i])
   )
   (map (i size)
-    (if (< (/ i width) (- height 1)) [false i])
+    (if (< (/ i width) hh) [false i])
   )
 )))
 
 -- Find the root of a set cell -> cell
 (def (find-root cell)
-  (while (. cell 1) (set cell (. cell 1)))
-  cell
+  (? (. cell 1) (find-root (. cell 1)) cell)
 )
 
 (for (item sequence)
@@ -43,7 +44,7 @@
   (def root (find-root (. cells i)))
   (def other (find-root (. cells (+ i (? (. item 0) 1 width)))))
   (if (!= (. root 0) (. other 0))
-    (. other 1 root)
+    (. root 1 other)
     (. (. walls i) (? (. item 0) 0 1) false)
   )
 )
