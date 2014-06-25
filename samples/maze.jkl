@@ -14,7 +14,7 @@
 
 (def width 30)
 (def height 30)
-(def size (* width height))
+(def size (× width height))
 
 -- Cells point to parent
 (def cells (map (i size) [i null]))
@@ -30,7 +30,7 @@
     (if (< (% i width) ww) [true i])
   )
   (map (i size)
-    (if (< (/ i width) hh) [false i])
+    (if (< (÷ i width) hh) [false i])
   )
 )))
 
@@ -43,15 +43,14 @@
   (def i (. item 1))
   (def root (find-root (. cells i)))
   (def other (find-root (. cells (+ i (? (. item 0) 1 width)))))
-  (if (!= (. root 0) (. other 0))
+  (if (≠ (. root 0) (. other 0))
     (. root 1 other)
     (. (. walls i) (? (. item 0) 0 1) false)
   )
 )
 
-
-(def w (* width 2))
-(def h (* height 2))
+(def w (× width 2))
+(def h (× height 2))
 (join "\n" (map (y (+ h 1))
   (join "" (map (x (+ w 1))
     (¿ "  " "██" (or
@@ -63,11 +62,11 @@
            -- cell middle
           false
           -- cell right
-          (. (. walls (+ (/ (- x 1) 2) (* (/ y 2) width))) 0)
+          (. (. walls (+ (÷ (- x 1) 2) (× (÷ y 2) width))) 0)
         )
         (? (% x 2)
           -- cell bottom
-          (. (. walls (+ (/ x 2) (* (/ (- y 1) 2) width))) 1)
+          (. (. walls (+ (÷ x 2) (× (÷ (- y 1) 2) width))) 1)
           -- cell corner
           true
         )

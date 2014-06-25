@@ -28,6 +28,15 @@ var rules = [
   CHAR,     /^./, // Everything else is sent as-is
 ];
 
+var aliases = {
+  "lambda": "λ",
+  "<=": "≤",
+  ">=": "≥",
+  "!=": "≠",
+  "/": "÷",
+  "*": "×",
+};
+
 function TEXT(match) {
   var json = match[0].replace(/\n/g, "\\n").replace(/\r/g, "\\r");
   return ["constant", JSON.parse(json)];
@@ -35,8 +44,7 @@ function TEXT(match) {
 
 function ID(match) {
   var name = match[0];
-  if (name === "lambda") name = "λ";
-  return ["id", name];
+  return ["id", aliases[name] || name];
 }
 
 function CONSTANT(match) {
