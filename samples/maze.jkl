@@ -1,3 +1,8 @@
+-- Inverted question mark!
+(macro (¿ no yes cond)
+  [[:? cond yes no]]
+)
+
 -- Sample output for 3x3 maze
 -- ██████████████
 -- ██      ██  ██
@@ -43,16 +48,13 @@
   )
 )
 
-(macro (tri yes no cond)
-  [[:? cond yes no]]
-)
 
 (def w (* width 2))
 (def h (* height 2))
 (join "\n" (map (y (+ h 1))
   (join "" (map (x (+ w 1))
     (sleep 1)
-    (tri "██" "  " (or
+    (¿ "  " "██" (or
       -- Four outer edges are always true
       (= x 0) (= y 0) (= x w) (= y h)
       -- Inner cells are more complicated
